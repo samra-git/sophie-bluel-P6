@@ -93,9 +93,7 @@ console.log(dataToken);
 const shadow = document.querySelector(".shadow")
 console.log(shadow);
 
-// --modification de la page d'accueil après connexion--//
-
-
+  // --modification de la page d'accueil après connexion--//
 if (dataToken) {
   // console.log(login);
   logout.style.display = "block";
@@ -105,22 +103,16 @@ if (dataToken) {
   modify.style.visibility = "visible";
   filterHidden.style.display = "none";
 
-// document.body.addEventListener("click", )
-
+  //--événement permettant d'ouvrir la modale--//
   modifyProject.addEventListener("click", () => {
     modale.style.display = "block";
-    shadow.style.display = "block";
-    
-    
+    shadow.style.display = "block"; 
 
-
-    //----fonction pour générer la gallerie dans la modale------//
-
+  //--fonction pour générer la galerie dans la modale--//
     const modalWorks = (arrayOfWorks) => {
       let worksHtml = "";
       arrayOfWorks.map((work) => {
         worksHtml += `
-    
     <figure data-work-id="${work.id}"  id="minPicture">
     <img src="${work.imageUrl}" alt="${work.title}"><i class="fa-solid fa-trash-can #trash"></i>
     </figure>
@@ -142,46 +134,34 @@ if (dataToken) {
         modifyWork.style.display = "none";
         shadow.style.display = "none";
       });
-
+      //**le click sur le fond sombre pour fermer la modale */
       shadow.addEventListener("click", () => {
         modale.style.display = "none";
         modifyWork.style.display = "none";
         shadow.style.display = "none";
-
-
       })
-
-
     });
 
 
-//--bouton qui permet d'accéder à la modale pour ajouter un projet--//
+    //--bouton qui permet d'accéder à la modale pour ajouter un projet--//
     btnAdd.addEventListener("click", () => {
       modale.style.display = "none";
       modifyWork.style.display = "block";
     });
-  //--flèche de retour à la modale supprimer projet--//
+
+    //--flèche de retour à la modale supprimer projet--//
     arrowReturn.addEventListener("click", () => {
       modale.style.display = "block";
       modifyWork.style.display = "none";
-      form.reset()
-      // previewPicture.src ="";
-      // previewPicture.style.visibility = "hidden";
-      // btnAddPicture.style.visibility = "visible";
-      // document.querySelector(".ajouterPhoto p").style.visibility = "visible";
-      
-
+      resetForm()     
     });
 
-  //------fonction pour supprimer un projet----//
-
+    //------événement et fonction pour supprimer un projet----//
     const trash = document.querySelectorAll("#minPicture i");
     trash.forEach((e) => {
       e.addEventListener("click", (e) => {
         const workId = e.target.closest("#minPicture").dataset.workId;
         deleteProjectById(workId);
-        
-        
       });
     });
 
@@ -218,29 +198,24 @@ if (dataToken) {
   });
     
 }
-
+//-----------fonction pour actualiser la modale---------//
 const newDataGallery = async() =>{
   const newWork = await fetch("http://localhost:5678/api/works");
 
   const works = await newWork.json();
   console.log(works);
   if (works) {
-    showWorks(works);
-    // modalWorks(works);
-    
+    showWorks(works);   
   }
-  
 };
+
 
 //----------fonction pour ajouter un projet-----------//
 const btnAddPicture = document.getElementById("btnAddPicture");
 const form = document.querySelector("#dataForm");
-const titre = document.getElementById("title").value;
+// const titre = document.getElementById("title").value;
 const filePicture = document.getElementById("filePicture");
 const previewPicture = document.querySelector("#previewPicture");
-
-//***écouteur d'événement à l'ajout de la photo */
-
 
 const formChange = (e) => {
   e.preventDefault();
@@ -249,12 +224,13 @@ const formChange = (e) => {
   const image = formData.get("image");
   const title = formData.get("title");
   const category = formData.get("category");
-  const project = { image, title, category };
+  // const project = { image, title, category };
 
   // console.log(project);
 
-  if ((image, title, category)) {
+  if ((image && title && category)) {
     btnSubmit.style.background = "#1D6154";
+    btnSubmit.style.cursor = "pointer"
   }
 
   if (image) {
@@ -292,20 +268,25 @@ console.log(formData);
       Authorization: "Bearer " + token,
     },
     body: formData,
-  }).then((res) =>  {
-     if (res.ok) {
-    location.reload();
-    // resetForm()
-    // modale.style.display = "block"
-    // modifyProject.style.display = "none"
-    // newDataGallery()
-    // modalWorks(works)
+  })
 
+  try {
+    const res = await callForSend;
+    if (res.ok) {
+      location.reload();
+      newDataGallery();
+    } else if (res.status === 400) {
+      const data = await res.json();
+      alert("Un problème est survenu lors de l'ajout du projet");
+      resetForm();
+    } else {
+      
+      alert("Erreur : un problème est survenu lors de l'ajout du projet");
+    }
+  } catch (error) {
+    alert("Erreur : un problème est survenu lors de l'ajout du projet");
   }
-}).catch((error) => {
-  alert("Erreur: un problème est survenu lors de l'ajout du projet");
-});
-};
+}
 
 btnSubmit.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -357,4 +338,4 @@ logout.addEventListener("click", deconnect);
 
 // //   const formData = new FormData(form)
 // // console.log(formData);
-// })
+// }

@@ -161,7 +161,7 @@ a:hover {
 #btnSubmit {
 	background-color:#A7A7A7 ;
 	margin-top: 80px;
-	cursor: pointer;
+	cursor:not-allowed;
 } 
 
 
@@ -233,6 +233,7 @@ a:hover {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	cursor:pointer;
 }
 header {
 	display: flex;
