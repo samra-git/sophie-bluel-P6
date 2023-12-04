@@ -13,7 +13,7 @@ const connect = () => {
   })
     .then((response) => response.json())
     .then((data) => {
-      sessionStorage.setItem("Token", data.token);
+      localStorage.setItem("Token", data.token);
 
 
       if (data.message || data.error) {

@@ -1,4 +1,4 @@
-// import {connect} from "./login.js"
+import {callCategory, callWorks} from "./api.js"
 
 //----------------VARIABLES----------------------//
 const galleryDom = document.querySelector("#portfolio .gallery");
@@ -15,29 +15,33 @@ const modifyWork = document.querySelector(".modifyWork");
 const arrowReturn = document.querySelector(".arrowReturn");
 const btnSubmit = document.getElementById("btnSubmit");
 
-
-
 let arrayWorks = [];
 let arrayCategories = [];
 
 //---------RECUPERATION DES DONNEES------------------//
 const elementCategories = async () => {
-  const recupCategories = await fetch("http://localhost:5678/api/categories");
-  const categories = await recupCategories.json();
-
-  arrayCategories = categories;
+  try {
+    const categories = await callCategory();
+    arrayCategories = categories;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des catégories", error)
+  }
   // console.log(categories);
 };
 elementCategories();
 
 const recupWorks = async () => {
-  const reponseWork = await fetch("http://localhost:5678/api/works");
+  try {
+    const works = await callWorks();
+      console.log(works);
+      arrayWorks = works;
 
-  const works = await reponseWork.json();
-  // console.log(works);
-  arrayWorks = works;
+  } catch (error) {
+  console.error("Erreur lors de la récupération des travaux", error)
+}
+
   // console.log(arrayWorks);
-};
+} 
 
 //------générations des données dynamiquement----------------//
 
@@ -80,12 +84,12 @@ filterDom.forEach((filtre, index) => {
     filterDom.forEach((f) => f.classList.remove("active"));
     filtre.classList.add("active");
 
-
     const filtersWorks = arrayWorks.filter((cat) => {
       return cat.categoryId == index;
     });
     if (index == 0) {
       showWorks(arrayWorks);
+
     } else {
       showWorks(filtersWorks);
       if (index = true) {
@@ -96,20 +100,14 @@ filterDom.forEach((filtre, index) => {
 });
 
 
-const filterSelected = (select, index) => {
-if (index = true) {
-  select.forEach((select) => {
-    select.style.background = "#1D6154"
-    select.style.color = "white"
-  })
-}
-}
+
 
 
 //------------------------------------MODALE--------------------------//
 
-const dataToken = sessionStorage.getItem("isConnected", true);
+const dataToken = localStorage.getItem("Token");
 console.log(dataToken);
+localStorage.setItem("Token", dataToken)
 const shadow = document.querySelector(".shadow")
 console.log(shadow);
 
@@ -122,12 +120,12 @@ if (dataToken) {
   modeEdition.style.visibility = "visible";
   modify.style.visibility = "visible";
   filterListDom.style.display = "none";
-
+}
   //--événement permettant d'ouvrir la modale--//
   modifyProject.addEventListener("click", () => {
     modale.style.display = "block";
     shadow.style.display = "block"; 
-
+  })
   //--fonction pour générer la galerie dans la modale--//
     const modalWorks = (arrayOfWorks) => {
       let worksHtml = "";
@@ -185,20 +183,23 @@ if (dataToken) {
       });
     });
 
-    
+
+    // const token = localStorage.getItem("Token");
+     
     const deleteProjectById = async (workId) => {
-      const token = sessionStorage.getItem("Token");
+      try {
+      const token = localStorage.getItem("Token")
       const userConfirmed = confirm("Etes-vous sûr de vouloir supprimer?");
       console.log(userConfirmed);
 
       if (userConfirmed) {
-        fetch("http://localhost:5678/api/works/" + workId, {
+       const res = await fetch("http://localhost:5678/api/works/" + workId, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + token,
           },
         })
-          .then((res) => {
+          
             if (!res.ok) {
               console.error("Erreur lors de la suppression du projet");
             } else {
@@ -209,15 +210,16 @@ if (dataToken) {
                }
               
             }
-          })
-          .catch((error) => {
+          }
+        } catch (error) {
             console.error("Erreur:" + error);
-          });
+          };
       }
-    };
-  });
     
-}
+
+  
+    
+
 //-----------fonction pour actualiser la modale---------//
 const newDataGallery = async() =>{
   const newWork = await fetch("http://localhost:5678/api/works");
@@ -278,8 +280,8 @@ const sendProject = async () => {
 const formData = new FormData(form);
 console.log(formData);
 
-  const token = sessionStorage.getItem("Token");
-  const dataToken = sessionStorage.getItem("isConnected", true);
+  const token = localStorage.getItem("Token");
+  // const dataToken = sessionStorage.getItem("isConnected", true);
 // console.log(token);
   const callForSend = await fetch("http://localhost:5678/api/works", {
     method: "POST",
@@ -334,13 +336,13 @@ const resetForm = () => {
 
 const deconnect = (e) => {
   e.preventDefault()
-  sessionStorage.clear();
+  localStorage.clear();
   document.location.href = "./index.html";
 };
 logout.addEventListener("click", deconnect);
 
 
-
+  
 
 
 
