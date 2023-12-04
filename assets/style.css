@@ -374,17 +374,21 @@ li:hover {
 	color:  #1D6154;		
 	
 }
-
+/* 
  #portfolio .filter span {
 	background-color: white;
 } 
 
 #portfolio .filters span:nth-child(1) {
 	background-color:#1D6154;
-}
+} */
 
 
-.filters span:nth-child(1) {
+/* .filters span:nth-child(1) {
+	background-color: #1D6154;
+	color: #FFF;
+} */
+#portfolio span.active{
 	background-color: #1D6154;
 	color: #FFF;
 }

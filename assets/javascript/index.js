@@ -7,7 +7,6 @@ const logout = document.querySelector("nav li:nth-child(4)");
 const login = document.querySelector("nav li:nth-child(3)");
 const modeEdition = document.querySelector(".blackspace");
 const modify = document.querySelector(".modifier");
-const filterHidden = document.querySelector(".filters");
 const modifyProject = document.querySelector(".modifier i");
 const modale = document.querySelector(".modale");
 const galleryModal = document.querySelector(".galleryModal");
@@ -15,6 +14,8 @@ const close = document.querySelectorAll(".close");
 const modifyWork = document.querySelector(".modifyWork");
 const arrowReturn = document.querySelector(".arrowReturn");
 const btnSubmit = document.getElementById("btnSubmit");
+
+
 
 let arrayWorks = [];
 let arrayCategories = [];
@@ -69,11 +70,17 @@ const showCategories = (arrayOfCategories) => {
   
 };
 showCategories(arrayCategories);
-
+console.log(arrayWorks);
 //fonction filtres//
 const filterDom = document.querySelectorAll(".filter");
+
+console.log(filterDom);
 filterDom.forEach((filtre, index) => {
   filtre.addEventListener("click", () => {
+    filterDom.forEach((f) => f.classList.remove("active"));
+    filtre.classList.add("active");
+
+
     const filtersWorks = arrayWorks.filter((cat) => {
       return cat.categoryId == index;
     });
@@ -81,9 +88,22 @@ filterDom.forEach((filtre, index) => {
       showWorks(arrayWorks);
     } else {
       showWorks(filtersWorks);
+      if (index = true) {
+      }
+      
     }
   });
 });
+
+
+const filterSelected = (select, index) => {
+if (index = true) {
+  select.forEach((select) => {
+    select.style.background = "#1D6154"
+    select.style.color = "white"
+  })
+}
+}
 
 
 //------------------------------------MODALE--------------------------//
@@ -101,7 +121,7 @@ if (dataToken) {
   login.style.display = "none";
   modeEdition.style.visibility = "visible";
   modify.style.visibility = "visible";
-  filterHidden.style.display = "none";
+  filterListDom.style.display = "none";
 
   //--événement permettant d'ouvrir la modale--//
   modifyProject.addEventListener("click", () => {
@@ -210,7 +230,7 @@ const newDataGallery = async() =>{
 };
 
 
-//----------fonction pour ajouter un projet-----------//
+//----------fonction pour modifier l'apparence du formulaire une fois rempli-----------//
 const btnAddPicture = document.getElementById("btnAddPicture");
 const form = document.querySelector("#dataForm");
 // const titre = document.getElementById("title").value;
@@ -253,7 +273,7 @@ const formChange = (e) => {
 
 dataForm.addEventListener("change",  formChange);
 
-
+//---------------------------fonction pour envoyer un nouveau projet-------------------------------//
 const sendProject = async () => {
 const formData = new FormData(form);
 console.log(formData);
@@ -295,6 +315,7 @@ btnSubmit.addEventListener("click", async (e) => {
   
 });
 
+//-------------fonction pour vider le formulaire----------//
 const resetForm = () => {
     form.reset()
     previewPicture.src ="";
@@ -302,7 +323,9 @@ const resetForm = () => {
     previewPicture.style.visibility = "hidden";
     btnAddPicture.style.visibility = "visible";
     document.querySelector(".ajouterPhoto p").style.visibility = "visible";
-    btnSubmit.style.background = "#A7A7A7"
+    btnSubmit.style.background = "#A7A7A7";
+    btnSubmit.style.cursor = "not-allowed"
+
 }
 
 
