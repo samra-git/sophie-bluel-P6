@@ -42,6 +42,7 @@ const recupWorks = async () => {
 
   // console.log(arrayWorks);
 } 
+recupWorks()
 
 //------générations des données dynamiquement----------------//
 
@@ -71,8 +72,8 @@ const showCategories = (arrayOfCategories) => {
   categoriesHtml = "<span class='filter'>Tous</span>" + categoriesHtml;
   filterListDom.innerHTML = categoriesHtml;
 
-  
 };
+
 showCategories(arrayCategories);
 console.log(arrayWorks);
 //fonction filtres//
